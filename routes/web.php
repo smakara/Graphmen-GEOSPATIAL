@@ -27,6 +27,7 @@ Route::get('/home', 'HCPController@home');
 Route::get('/products', 'HCPController@products');
 
 
+
 Route::post('/adddependant', 'HCPController@addDependantToPrincipal');
 Route::post('/login', 'HCPController@login');
 Route::post('/searchmember', 'HCPController@searchmember');
@@ -42,9 +43,31 @@ Route::post('/deleteDependantByPrincipal', 'HCPController@deleteDependantByPrinc
 Route::post('/principalprofile/deleteDependantByPrincipal', 'HCPController@deleteDependantByPrincipal');
 Route::post('/editAgent', 'HCPController@editAgent');
 Route::post('/editagentdata', 'HCPController@editagentdata');
+Route::post('/addProduct', 'HCPController@addProduct');
+
+Route::post('/viewProduct', 'HCPController@viewProduct');
 
 
 Route::post('/registermemberAjax', 'HCPController@registermember');
+
+
+
+
+
+
+
+
+Route::get('/sics', 'HCPController@sics');
+Route::get('/createbusiness', 'HCPController@createbusiness');
+
+Route::post('/createclaim', 'HCPController@createclaim');
+Route::post('/createbusiness', 'HCPController@createbusinessPost');
+
+
+
+//Route::post('/createclaim', 'HCPController@createclaim');
+
+
 
 
 

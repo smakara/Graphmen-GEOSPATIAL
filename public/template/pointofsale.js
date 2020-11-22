@@ -14,6 +14,7 @@ var canteenmealname = "";
 var dynamicBalance = 0;
 var currentBalance = 0;
 var globalDate = "";
+var globalProductID = "";
 
 var baseURL = "http://localhost/hcp/public/";
 
@@ -286,6 +287,58 @@ $(document).ready(function () {
         });
 
     });
+
+    $("#btnaddproduct").on("click", function () {
+
+
+        var addProductForm = $('#addProductForm').serializeArray();
+        var product_name = $("#product_name").val();
+        var product_desc = $("#product_desc").val();
+        var product_currency = $("#product_currency").val();
+        var prem_contri_type = $("#prem_contri_type").val();
+        var prem_freq = $("#prem_freq").val();
+        var waitingperiod = $("#waitingperiod").val();
+
+        var premium = $("#premium").val();
+        var childpremium = $("#childpremium").val();
+
+
+        $.ajax({
+            type: 'POST',
+            url: "addProduct",
+            dataType: 'JSON',
+            data: {childpremium: childpremium, premium: premium, product_name: product_name, product_name: product_name, product_desc: product_desc, product_currency: product_currency, prem_contri_type: prem_contri_type, prem_freq: prem_freq, waitingperiod: waitingperiod},
+            success: function (data, textStatus, jqXHR) {
+
+
+                console.log("############ data " + data.data);
+//                alert(data.data);
+
+                new PNotify({
+                    title: 'Notification',
+                    text: data.data,
+                    type: 'success'
+                });
+
+
+                $("#product_name").val("");
+                $("#product_desc").val("");
+                $("#product_currency").val("");
+                $("#prem_contri_type").val("");
+                $("#prem_freq").val("");
+                $("#waitingperiod").val("");
+                $("#premium").val("");
+                $("#childpremium").val("");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("############ jqXHR " + jqXHR);
+                console.log("############textStatus " + textStatus);
+                console.log("############ errorThrown " + errorThrown);
+            }
+        });
+
+    });
+
     $('#btnaddtoexpensetable').on('click', function () {
 
         var expensecategory = $("#expensecategory").val();
@@ -294,6 +347,10 @@ $(document).ready(function () {
         var estcost = $("#estcost").val();
         var createnewrequestform = $('#createnewrequestform').serializeArray();
         $('#tblexpense td').remove();
+
+
+
+
 
         $.ajax({
             type: 'POST',
@@ -318,7 +375,7 @@ $(document).ready(function () {
                 console.log("############ errorThrown " + errorThrown);
             }
         });
-//  
+//         
     });
 
 
@@ -403,10 +460,43 @@ $("#selectedEvent").on('change', function () {
 
 
 
-function deleteProduct(id) {
+function deleteProduct() {
 
-    alert('deleteProduct ' + id);
+    alert('deleteProduct ' + globalProductID);
 }
+
+
+function viewProduct(id) {
+
+    globalProductID = id;
+    var temp = "data";
+
+    $.ajax({
+        type: 'POST',
+        url: "viewProduct",
+        dataType: 'JSON',
+        data: {id: id},
+        success: function (data) {
+            $('#productDetailsTable td').remove();
+            $("#productDetailsTable").append("<tr><td><strong>Product Name</strong></td><td>" + data.productDetails.e_name + "</td></tr>");
+            $("#productDetailsTable").append("<tr><td><strong>Currency</strong></td><td>" + data.productDetails.e_currency + "</td></tr>");
+            $("#productDetailsTable").append("<tr><td><strong>Premium </strong></td><td>" + data.productDetails.e_premium + "</td></tr>");
+            $("#productDetailsTable").append("<tr><td><strong>Child Premium</strong></td><td>" + data.productDetails.e_premium_child + "</td></tr>");
+            $("#productDetailsTable").append("<tr><td><strong>Contribution Type</strong></td><td>" + data.productDetails.e_prem_contri_type + "</td></tr>");
+            $("#productDetailsTable").append("<tr><td><strong>Premium Frequency</strong></td><td>" + data.productDetails.e_premium_frequency + " Month(s)</td></tr>");
+            $("#productDetailsTable").append("<tr><td><strong>Waiting Period</strong></td><td>" + data.productDetails.e_waiting_period + " Days</td></tr>");
+            $("#productDetailsTable").append("<tr><td><strong>Description</strong></td><td>" + data.productDetails.e_desc + "</td></tr>");
+
+
+            $('#productdetailsDiv').show();
+
+        }
+    });
+
+}
+
+
+
 
 
 function editDependantByPrincipal(id) {
@@ -460,8 +550,10 @@ function editAgent(id) {
             $("#eaphone").val(data.agent.d_mobile);
             $("#eaemail").val(data.agent.d_email);
             $("#eacity").val(data.agent.d_city_town);
+            $("#eacommission").val(data.agent.d_commission);
+
             $("#d_agentID").val(id);
-            
+
             $("#editagent").modal("show");
 //            window.location = baseURL + "agents";
         }

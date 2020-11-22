@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 
 class HCPController extends Controller {
 
@@ -108,7 +109,7 @@ class HCPController extends Controller {
                 "d_name" => $request->name . " " . $request->name,
                 "d_email" => $request->email,
                 "d_mobile" => $request->phone,
-                "d_commission" => 0,
+                "d_commission" => $request->commission,
                 "d_premium" => 0,
                 "d_premium_child" => 0,
             ]);
@@ -146,12 +147,54 @@ class HCPController extends Controller {
     }
 
     public function agentprofile($id) {
-
+        date_default_timezone_set('Africa/Harare');
         $d_agents = DB::table('d_agents')
                 ->where('d_agentID', $id)
                 ->first();
+
+
+        $date = "(" . " " . Carbon::now()->startOfMonth()->format('d-M-yy') . " - " . Carbon::now()->format('d-M-yy') . " )";
+
+        $from = Carbon::now()->startOfMonth()->format('yy-m-d H:m:s.i');
+        $todate = Carbon::now()->format('yy-m-d H:m:s.i');
+
+        $agentcommissionlist = DB::select("Select
+    Sum(m_credits.m_amount) As m_amount1,
+    m_credits.m_principleID As m_principleID1,
+    a_principles.a_firstname,
+    a_principles.a_surname,
+    m_credits.m_date_created,
+    a_principles.a_agentID
+From
+    a_principles Inner Join
+    m_credits On a_principles.a_principleID = m_credits.m_principleID
+Where
+    m_credits.m_date_created Between '$from' And '$todate' And
+    a_principles.a_agentID = '$id'
+Group By
+    m_credits.m_principleID,
+    a_principles.a_firstname,
+    a_principles.a_surname,
+    m_credits.m_date_created,
+    a_principles.a_agentID");
+
+
+        $totalcredits = 0;
+        foreach ($agentcommissionlist as $data) {
+            $totalcredits = $data->m_amount1 + $totalcredits;
+        };
+
+
+        $commission = ($d_agents->d_commission / 100) * $totalcredits;
+
+
         $data = array(
-            'agent' => $d_agents
+            'agent' => $d_agents,
+            "date" => $date,
+            "commission" => $commission,
+            "totalcredits" => $totalcredits,
+            "agentcommissionlist" => $agentcommissionlist,
+            "commpercentage" => $d_agents->d_commission
         );
 //        return $data;
         return view('agentprofile', $data);
@@ -435,6 +478,7 @@ class HCPController extends Controller {
                         "d_name" => $request->eaname,
                         "d_email" => $request->eaemail,
                         "d_mobile" => $request->eaphone,
+                        "d_commission" => $request->eacommission,
                         "d_city_town" => $request->eacity
             ]);
             Log::info('user: ' . session()->get('user')->w_user_Logon);
@@ -452,4 +496,273 @@ class HCPController extends Controller {
         return self::agents();
     }
 
+    public function sics() {
+
+        return view('sics');
+    }
+
+    public function createclaim(Request $request) {
+
+//        return $request;cc
+//        $url = 'http://10.170.4.30:9099/claim/web/create';
+
+        $url = 'http://localhost:9099/claim/web/create2';
+//        
+//
+// Create a new cURL resource
+        $ch = curl_init($url);
+
+
+        $data = array(
+            'scopeOfCoverReferenceIdentifier' => $request->scopeOfCoverReferenceIdentifier,
+            'scopeOfCoverReferenceBeginDateTime' => $request->scopeOfCoverReferenceBeginDateTime,
+            'scopeOfCoverReferenceSequenceNumber' => $request->scopeOfCoverReferenceSequenceNumber,
+            'scopeOfCoverReferenceName' => $request->scopeOfCoverReferenceName,
+            'claimLossName' => $request->claimLossName,
+            'claimPartialLossStartingDateVersionNumber' => $request->claimPartialLossStartingDateVersionNumber,
+            'claimPartialLossStartingDateVersionDay' => $request->claimPartialLossStartingDateVersionDay,
+            'claimPartialLossStartingDateVersionMonth' => $request->claimPartialLossStartingDateVersionMonth,
+            'claimPartialLossStartingDateVersionYear' => $request->claimPartialLossStartingDateVersionYear,
+            'claimsTriggerCode' => $request->claimsTriggerCode,
+            'claimsTriggerSubclassNumber' => $request->claimsTriggerSubclassNumber,
+            'claimsTriggerSubclassDate' => $request->claimsTriggerSubclassDate,
+            'recoveryCalculationIsClaimIncluded' => $request->recoveryCalculationIsClaimIncluded,
+            'claimTypeCode' => $request->claimTypeCode,
+            'claimTypeSubclassNumber' => $request->claimTypeSubclassNumber,
+            'scopeOfCoverRelationClaimAdvisedDate' => $request->scopeOfCoverRelationClaimAdvisedDate,
+            'scopeOfCoverRelationClaimStatusCode' => $request->scopeOfCoverRelationClaimStatusCode,
+            'scopeOfCoverRelationClaimStatusSubclassNumber' => $request->scopeOfCoverRelationClaimStatusSubclassNumber,
+            'claimDispositionDateOfChange' => $request->claimDispositionDateOfChange,
+            'claimDispositionCode' => $request->claimDispositionCode,
+            'claimDispositionSubclassNumber' => $request->claimDispositionSubclassNumber,
+            'password' => '123456'
+        );
+        $payload = json_encode(array("claimBusiness" => $data));
+
+// Attach encoded JSON string to the POST fields
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+
+// Set the content type to application/json
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+
+// Return response instead of outputting
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+// Execute the POST request
+        $result = curl_exec($ch);
+//        echo ">>>>>>>>>> " . json_decode($result, true)['responseDesc'];
+//        echo ">>>>>>>>>> " . json_decode($result, true)['claimIdentifier'];
+//        echo ">>>>>>>>>> " . json_decode($result, true)['responseCode'];
+// Close cURL res;ource
+        curl_close($ch);
+
+
+        if (json_decode($result, true)['responseDesc'] == "success") {
+
+            return redirect()->back()->with('message', 'successfully added ,claimIdentifier: ' . json_decode($result, true)['claimIdentifier']);
+        }
+
+        if (json_decode($result, true)['responseCode'] == "01") {
+
+            return redirect()->back()->with('error', json_decode($result, true)['responseDesc']);
+        }
+    }
+
+    public function createbusiness() {
+
+
+        return view('createbusiness');
+    }
+
+    public static function createbusinessPost(Request $request) {
+        $url = 'http://10.170.4.30:9099/business/web/create';
+        $ch = curl_init($url);
+        $data = array(
+            'title' => $request->title,
+            'accountGroupCode' => $request->accountGroupCode,
+            'accountGroupSubclassNumber' => $request->accountGroupSubclassNumber,
+            'functionalCurrencyIsoAlpha' => $request->functionalCurrencyIsoAlpha,
+            'functionalCurrency2IsoAlpha' => $request->functionalCurrency2IsoAlpha,
+            'businessDirectionCode' => $request->businessDirectionCode,
+            'businessDirectionSubclassNumber' => $request->businessDirectionSubclassNumber,
+            'typeOfBusinessCode' => $request->typeOfBusinessCode,
+            'typeOfBusinessSubclassNumber' => $request->typeOfBusinessSubclassNumber,
+            'IPBeginDateTime' => $request->IPBeginDateTime,
+            'IPEndDateTime' => $request->IPEndDateTime,
+            'IPUnderwritingYear' => $request->IPUnderwritingYear,
+            'IPNote' => $request->IPNote,
+            'identifierCR' => $request->identifierCR,
+            'relationshipTypeCodeCR' => $request->relationshipTypeCodeCR,
+            'referenceCR' => $request->referenceCR,
+            'identifierRR' => $request->identifierRR,
+            'relationshipTypeCodeRR' => $request->relationshipTypeCodeRR,
+            'roleForCedentCodeFCRR' => $request->roleForCedentCodeFCRR,
+            'subclassNumberFCRR' => $request->subclassNumberFCRR,
+            'identifierIR' => $request->identifierIR,
+            'relationshipTypeCodeIR' => $request->relationshipTypeCodeIR,
+            'referenceIR' => $request->referenceIR,
+            'identifierBR' => $request->identifierBR,
+            'relationshipTypeCodeBR' => $request->relationshipTypeCodeBR,
+            'businessAdministratorTaskCodePayBR' => $request->businessAdministratorTaskCodePayBR,
+            'businessAdministratorTaskCodeADMBR' => $request->businessAdministratorTaskCodeADMBR,
+            'businessAdministratorTaskCodeBPAYBR' => $request->businessAdministratorTaskCodeBPAYBR,
+            'brokerTaskSubclassNumberBR' => $request->brokerTaskSubclassNumberBR,
+            'creditTermDurationUnitCodeBR' => $request->creditTermDurationUnitCodeBR,
+            'creditTermDurationValueBR' => $request->creditTermDurationValueBR,
+            'currencyIsoAlpha' => $request->currencyIsoAlpha,
+            'includedCountriesIsoAlpha3' => $request->includedCountriesIsoAlpha3,
+            'includedRefDataCode' => $request->includedRefDataCode,
+            'reportingUnitCode' => $request->reportingUnitCode,
+            'writtenSharePercent' => $request->writtenSharePercent,
+            'offeredSharePercent' => $request->offeredSharePercent,
+            'dedBrokerageCondNote' => $request->dedBrokerageCondNote,
+            'dedBrokerageCondDeductionTypeCode' => $request->dedBrokerageCondDeductionTypeCode,
+            'dedBrokerageCondCalculationMethodCode' => $request->dedBrokerageCondCalculationMethodCode,
+            'dedBrokerageCondPercent' => $request->dedBrokerageCondPercent,
+            'dedCommCondNote' => $request->dedCommCondNote,
+            'dedCommCondDeductionTypeCode' => $request->dedCommCondDeductionTypeCode,
+            'dedCommCondCalculationMethodCode' => $request->dedCommCondCalculationMethodCode,
+            'dedOtherCondCurrencyIsoAlpha' => $request->dedOtherCondCurrencyIsoAlpha,
+            'dedOtherCondComment' => $request->dedOtherCondComment,
+            'limPremCondCurrencyIsoAlpha' => $request->limPremCondCurrencyIsoAlpha,
+            'limPremCondIsOriginal' => $request->limPremCondIsOriginal,
+            'limPremCondRefConditionPerCode' => $request->limPremCondRefConditionPerCode,
+            'limPremCondRefOptionalFieldCode' => $request->limPremCondRefOptionalFieldCode,
+            'limPremCondRefLimitTypeCode' => $request->limPremCondRefLimitTypeCode,
+            'limPremCondAmount' => $request->limPremCondAmount,
+            'limPremCondCurrencyForLimitPremiumCurrencyIsoAlpha' => $request->limPremCondCurrencyForLimitPremiumCurrencyIsoAlpha,
+            'limPremCondCurrencyForLimitPremiumMinimumHundredPercent' => $request->limPremCondCurrencyForLimitPremiumMinimumHundredPercent,
+            'limPremCondInstalmentConditionCurrencyIsoAlpha' => $request->limPremCondInstalmentConditionCurrencyIsoAlpha,
+            'limPremCondInstalmentConditionNumberOfInstalments' => $request->limPremCondInstalmentConditionNumberOfInstalments,
+            'limPremCondPaymentOfFirstInstalmentUnitCode' => $request->limPremCondPaymentOfFirstInstalmentUnitCode,
+            'limPremCondPaymentOfFirstInstalmentUnitSubclassNumber' => $request->limPremCondPaymentOfFirstInstalmentUnitSubclassNumber,
+            'limPremCondPaymentOfFirstInstalmentValue' => $request->limPremCondPaymentOfFirstInstalmentValue,
+            'limPremCondPaymentOfSubsequentInstalmentUnitCode' => $request->limPremCondPaymentOfSubsequentInstalmentUnitCode,
+            'limPremCondPaymentOfSubsequentInstalmentUnitSubclassNumber' => $request->limPremCondPaymentOfSubsequentInstalmentUnitSubclassNumber
+        );
+
+
+
+
+        $payload = json_encode(array("createBusiness" => $data));
+
+// Attach encoded JSON string to the POST fields
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+
+// Set the content type to application/json
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+
+// Return response instead of outputting
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+// Execute the POST request
+        $result = curl_exec($ch);
+//        echo ">>>>>>>>>> " . json_decode($result, true)['responseDesc'];
+//        echo ">>>>>>>>>> " . json_decode($result, true)['claimIdentifier'];
+//        echo ">>>>>>>>>> " . json_decode($result, true)['responseCode'];
+// Close cURL res;ource
+        curl_close($ch);
+
+        return $result;
+    }
+
+    function addProduct(Request $request) {
+
+        try {
+
+            $data = DB::table('e_assurance_types')
+                    ->where('e_name', $request->product_name)
+                    ->get();
+
+
+            if (sizeof($data) == 0) {
+
+                $e_assurance_typeID = DB::table('e_assurance_types')->insertGetId([
+                    "e_name" => $request->product_name,
+                    "e_premium" => $request->premium,
+                    "e_waiting_period" => $request->waitingperiod,
+                    "e_currency" => $request->product_currency,
+                    "e_prem_contri_type" => $request->prem_contri_type,
+                    "e_premium_frequency" => $request->prem_freq,
+                    "e_desc" => $request->product_desc,
+                    "e_premium_child" => $request->childpremium,
+                ]);
+
+
+                session([
+                    'user' => $details,
+                    'username' => $details->w_user_Name,
+                    'role' => $role
+                ]);
+
+                Log::info('Product: ' . $request->product_name . " Added by " . session()->get('user')->w_user_Logon);
+
+                $data = array(
+                    'data' => "success"
+                );
+                return $data;
+            } else {
+
+                $data = array(
+                    'data' => "Product already exists"
+                );
+                return $data;
+            }
+        } catch (Exception $exc) {
+            Log::error('add Product function error : ' . $exc);
+        }
+    }
+
+    public function viewProduct(Request $request) {
+
+
+        $e_assurance_types = DB::table('e_assurance_types')
+                ->where('e_assurance_typeID', $request->id)
+                ->first();
+
+        $data = array(
+            'productDetails' => $e_assurance_types
+        );
+
+        Log::info('Product details: ' . $e_assurance_types->e_name . " Viewed by " . session()->get('user')->w_user_Logon);
+        return $data;
+    }
+
 }
+
+//        $client = new Client();
+//        $response = $client->request('GET', 'http://localhost:9099/business/test');
+//        $statusCode = $response->getStatusCode();
+//        $body = $response->getBody()->getContents();
+//
+//        return $body;
+//        $response = $client->request('POST', 'http://localhost:9099/business/testpost', [
+//                'form_params' => [
+//                'field_name' => 'abc',
+//                'other_field' => '123',
+//            ]
+//        ]);
+        // A sample PHP Script to POST data using cURL
+
+
+
+
+
+
+
+
+//        $endpoint = 'http://localhost:9099/business/testpost';
+//        $options = [
+//            'headers' => [
+//                'Content-Type' => 'application/json',
+//                'Accept' => 'application/json'],
+//            'json' => [
+//                'field1' => $aaa,
+//                'field2' => "ujjhhnbg",],
+//        ];
+//
+//        $client = new Client();
+//        $client->post($endpoint, $options);
+//
+//       
+//        dd($request);

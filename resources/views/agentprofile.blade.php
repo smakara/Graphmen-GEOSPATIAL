@@ -24,8 +24,9 @@
 
     <div class="row">
         <div class="col-md-4 col-lg-3">
-
-            <section class="panel">
+            <div class="row">
+                
+                 <section class="panel">
                 <div class="panel-body">
                     <div class="thumb-info mb-md">
                         <img src="{{asset('template/assets/images/!logged-user.jpg')}}" class="rounded img-responsive" alt="John Doe">
@@ -37,10 +38,50 @@
 
                 </div>
             </section>
+            </div>
+           
 
 
 
+            <div class="row">
 
+                <table class="table table-striped table-hover  table-borderless mb-none">
+
+                    <tbody>
+                        <tr>
+                            <td>Agent Name</td>
+                            <td>{{$agent->d_name}}</td>
+
+                        </tr>
+
+
+                        <tr>
+                            <td>Commission Period</td>
+                            <td> {{$date}}</td>
+
+                        </tr>
+                        <tr>
+                            <td>Comm. Percentage</td>
+                            <td>{{$commpercentage}} %</td>
+
+                        </tr>
+
+
+                        <tr>
+                            <td>Total Premium</td>
+                            <td> {{$totalcredits}}</td>
+
+                        </tr>
+
+                        <tr style="color: #710909">
+                            <td>Commission</td>
+                            <td> <strong>{{$commission}}</strong></td>
+
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div class="col-md-8 col-lg-9">
 
@@ -53,7 +94,7 @@
                         <a href="#edit" data-toggle="tab">Login Credentials</a>
                     </li>
                     <li>
-                        <a href="#payments" data-toggle="tab">Total Premiums</a>
+                        <a href="#payments" data-toggle="tab"> Commission </a>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -87,6 +128,12 @@
                                         <tr>
                                             <td>Employer</td>
                                             <td> FBC</td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <td>Commission Percentage</td>
+                                            <td> {{$agent->d_commission}} %</td>
 
                                         </tr>
 
@@ -142,7 +189,7 @@
                                     <a href="#" class="fa fa-times"></a>
                                 </div>
 
-                                <h2 class="panel-title">Total Premiums</h2>
+                                <h2 class="panel-title">Agent Commission : {{$date}}</h2>
                             </header>
                             <div class="panel-body">
                                 <div class="table-responsive">
@@ -153,26 +200,24 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <table class="table table-striped mb-none">
+                                    <table class="table table-striped mb-none" id="datatable-default">
                                         <thead>
                                             <tr>
-                                                <th>Status</th>
-                                                <th>Member Premiums</th>
-                                                <th>Dependant Premiums</th>
-                                                <th>Actions</th>
+                                                <th>Principle Name</th>
+                                                <th>Date</th>
+                                                <th>Amount</th>
+
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach($agentcommissionlist as $data)
                                             <tr>
-                                                <td>Registered</td>
-                                                <td>180.00</td>
-                                                <td>120.00</td>
-                                                <td class="actions">
-                                                    <a href=""><i class="fa fa-pencil"></i></a>
-                                                    <a href="" class="delete-row"><i class="fa fa-trash-o"></i></a>
-                                                </td>
-                                            </tr>
+                                                <td>{{$data->a_firstname}} {{$data->a_surname}}</td>
+                                                <td>{{$data->m_date_created}}</td>
+                                                <td>{{$data->m_amount1}}</td>
 
+                                            </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>

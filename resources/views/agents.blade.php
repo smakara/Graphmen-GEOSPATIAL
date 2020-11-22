@@ -53,7 +53,7 @@
 
             </div>
         </div>
-        <div class="col-md-6 col-lg-12 col-xl-6">
+        <div class="col-md-12 col-lg-12 col-xl-12">
             <section class="panel">
                 <header class="panel-heading">
                     <div class="panel-actions">
@@ -129,7 +129,7 @@
                 <section class="panel">
                     <form method="post" action="{{url('editagentdata')}}" id="demo-form" class="form-horizontal mb-lg">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
-                          <input type="hidden" name="d_agentID" id="d_agentID" value="{{ csrf_token() }}"/>
+                        <input type="hidden" name="d_agentID" id="d_agentID" value="{{ csrf_token() }}"/>
                         <header class="panel-heading">
                             <h2 class="panel-title">Edit Agent</h2>
                         </header>
@@ -141,7 +141,7 @@
                                     <input type="text" name="eaname" id="eaname" class="form-control" placeholder="Type your name..." required="true"/>
                                 </div>
                             </div>
-                           
+
 
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Phone</label>
@@ -153,6 +153,13 @@
                                 <label class="col-sm-3 control-label">Email</label>
                                 <div class="col-sm-9">
                                     <input type="email" name="eaemail" id="eaemail" class="form-control" placeholder="Type your Email..." required="true"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Commission</label>
+                                <div class="col-sm-9">
+                                    <input type="number" name="eacommission" step="1" min="1" id="eacommission" class="form-control" placeholder="Type your Commission as percentage..." required/>
                                 </div>
                             </div>
 
@@ -233,6 +240,13 @@
                                 <label class="col-sm-3 control-label">Email</label>
                                 <div class="col-sm-9">
                                     <input type="email" name="email" id="email" class="form-control" placeholder="Type your Email..." required/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Commission</label>
+                                <div class="col-sm-9">
+                                    <input type="number" name="commission" step="1" min="1" id="commission" class="form-control" placeholder="Type your Commission as percentage..." required/>
                                 </div>
                             </div>
 
