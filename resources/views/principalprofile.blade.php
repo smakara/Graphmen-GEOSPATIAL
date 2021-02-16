@@ -19,7 +19,7 @@
                         <i class="fa fa-home"></i>
                     </a>
                 </li>
-                <li><span>Principal Profile</span></li>
+                <li><span>Principal Profilee</span></li>
             </ol>
 
             <a class="sidebar-right-toggle" ></a>
@@ -121,14 +121,18 @@
 
                                         </tr>
                                         <tr>
-                                            <td>Gender</td>
+                                            <td>Genderrrr</td>
                                             @if($principles->a_male_female=='1')
                                             <td>Male</td>
                                             @else
                                             <td>Female</td>
                                             @endif
                                         </tr>
+                                         <tr>
+                                            <td>Account Balance</td>
+                                            <td> ${{$balance}}</td>
 
+                                        </tr>
 
                                     </tbody>
                                 </table>

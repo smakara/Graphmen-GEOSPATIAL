@@ -6,12 +6,26 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Crypt;
 use GuzzleHttp\Client;
 
 class HCPController extends Controller {
 
     public function login(Request $request) {
 
+
+        session([
+//            'user' => $details,
+            'username' => "Administrator",
+            'role' => "Administrator"
+        ]);
+//
+//
+        $data = array(
+            'redirect' => 'home'
+        );
+
+        return redirect('/cities');
 
         $db = DB::table("w_users")
                 ->where("w_user_Logon", $request->username)
@@ -45,7 +59,8 @@ class HCPController extends Controller {
             );
 
             Log::info('login details: ' . $details->w_user_Logon);
-            return self::home();
+            //return self::home();
+            return redirect('/home');
         } else {
 
             return view('login');
@@ -58,7 +73,7 @@ class HCPController extends Controller {
         $data = array(
             'members' => []
         );
-        return view('home', $data);
+        return view('createbusiness', $data);
     }
 
     public function principalprofile($id) {
@@ -197,6 +212,7 @@ Group By
             "commpercentage" => $d_agents->d_commission
         );
 //        return $data;
+        Log::info(session()->get('user')->w_user_Logon . ' viewed agent profile: ' . $d_agents->d_name . " at " . Carbon::now()->format('d-M-yy H:m:s'));
         return view('agentprofile', $data);
     }
 
@@ -292,7 +308,7 @@ Group By
                 "a_birthdate" => date("Y-m-d G:i:s", time()),
                 "a_assurance_typeID" => 1
 
-//         
+//
             ]);
 
 
@@ -503,11 +519,10 @@ Group By
 
     public function createclaim(Request $request) {
 
-//        return $request;cc
-//        $url = 'http://10.170.4.30:9099/claim/web/create';
 
-        $url = 'http://localhost:9099/claim/web/create2';
-//        
+
+        $url = 'http://10.170.4.30:9099/claim/web/create';
+//
 //
 // Create a new cURL resource
         $ch = curl_init($url);
@@ -516,26 +531,25 @@ Group By
         $data = array(
             'scopeOfCoverReferenceIdentifier' => $request->scopeOfCoverReferenceIdentifier,
             'scopeOfCoverReferenceBeginDateTime' => $request->scopeOfCoverReferenceBeginDateTime,
-            'scopeOfCoverReferenceSequenceNumber' => $request->scopeOfCoverReferenceSequenceNumber,
-            'scopeOfCoverReferenceName' => $request->scopeOfCoverReferenceName,
-            'claimLossName' => $request->claimLossName,
-            'claimPartialLossStartingDateVersionNumber' => $request->claimPartialLossStartingDateVersionNumber,
+            'scopeOfCoverReferenceSequenceNumber' => "1",
+            'scopeOfCoverReferenceName' => "Main Section",
+            'claimLossName' => "CAL",
+            'claimPartialLossStartingDateVersionNumber' => "1",
             'claimPartialLossStartingDateVersionDay' => $request->claimPartialLossStartingDateVersionDay,
             'claimPartialLossStartingDateVersionMonth' => $request->claimPartialLossStartingDateVersionMonth,
             'claimPartialLossStartingDateVersionYear' => $request->claimPartialLossStartingDateVersionYear,
-            'claimsTriggerCode' => $request->claimsTriggerCode,
-            'claimsTriggerSubclassNumber' => $request->claimsTriggerSubclassNumber,
+            'claimsTriggerCode' => "CLMMADE",
+            'claimsTriggerSubclassNumber' => "1019",
             'claimsTriggerSubclassDate' => $request->claimsTriggerSubclassDate,
-            'recoveryCalculationIsClaimIncluded' => $request->recoveryCalculationIsClaimIncluded,
+            'recoveryCalculationIsClaimIncluded' => "false",
             'claimTypeCode' => $request->claimTypeCode,
-            'claimTypeSubclassNumber' => $request->claimTypeSubclassNumber,
+            'claimTypeSubclassNumber' => "527",
             'scopeOfCoverRelationClaimAdvisedDate' => $request->scopeOfCoverRelationClaimAdvisedDate,
-            'scopeOfCoverRelationClaimStatusCode' => $request->scopeOfCoverRelationClaimStatusCode,
-            'scopeOfCoverRelationClaimStatusSubclassNumber' => $request->scopeOfCoverRelationClaimStatusSubclassNumber,
+            'scopeOfCoverRelationClaimStatusCode' => "O",
+            'scopeOfCoverRelationClaimStatusSubclassNumber' => "517",
             'claimDispositionDateOfChange' => $request->claimDispositionDateOfChange,
-            'claimDispositionCode' => $request->claimDispositionCode,
-            'claimDispositionSubclassNumber' => $request->claimDispositionSubclassNumber,
-            'password' => '123456'
+            'claimDispositionCode' => "A",
+            'claimDispositionSubclassNumber' => "515"
         );
         $payload = json_encode(array("claimBusiness" => $data));
 
@@ -575,70 +589,80 @@ Group By
     }
 
     public static function createbusinessPost(Request $request) {
+
+        $startDate = $request->startdate;
+        $enddate = $request->enddate;
         $url = 'http://10.170.4.30:9099/business/web/create';
         $ch = curl_init($url);
         $data = array(
             'title' => $request->title,
-            'accountGroupCode' => $request->accountGroupCode,
-            'accountGroupSubclassNumber' => $request->accountGroupSubclassNumber,
-            'functionalCurrencyIsoAlpha' => $request->functionalCurrencyIsoAlpha,
-            'functionalCurrency2IsoAlpha' => $request->functionalCurrency2IsoAlpha,
+            'accountGroupCode' => "BETA",
+            'accountGroupSubclassNumber' => "225",
+            'functionalCurrencyIsoAlpha' => $request->currency,
+            'functionalCurrency2IsoAlpha' => $request->currency,
             'businessDirectionCode' => $request->businessDirectionCode,
-            'businessDirectionSubclassNumber' => $request->businessDirectionSubclassNumber,
+            'businessDirectionSubclassNumber' => "45",
             'typeOfBusinessCode' => $request->typeOfBusinessCode,
-            'typeOfBusinessSubclassNumber' => $request->typeOfBusinessSubclassNumber,
-            'IPBeginDateTime' => $request->IPBeginDateTime,
-            'IPEndDateTime' => $request->IPEndDateTime,
-            'IPUnderwritingYear' => $request->IPUnderwritingYear,
-            'IPNote' => $request->IPNote,
+            'typeOfBusinessSubclassNumber' => "46",
+            // 'iPBeginDateTime' =>"2020-01-01T00:00:0000:00",
+            // 'iPEndDateTime' =>"2020-12-31T23:59:5900:00",
+            'iPBeginDateTime' => $startDate,
+            'iPEndDateTime' => $enddate,
+            'iPUnderwritingYear' => $request->IPUnderwritingYear,
+            'iPNote' => "insuredPeriodNotes",
+            //'identifierCR' => "A2",
             'identifierCR' => $request->identifierCR,
-            'relationshipTypeCodeCR' => $request->relationshipTypeCodeCR,
-            'referenceCR' => $request->referenceCR,
-            'identifierRR' => $request->identifierRR,
-            'relationshipTypeCodeRR' => $request->relationshipTypeCodeRR,
-            'roleForCedentCodeFCRR' => $request->roleForCedentCodeFCRR,
-            'subclassNumberFCRR' => $request->subclassNumberFCRR,
+            'relationshipTypeCodeCR' => "CR",
+            'referenceCR' => "55",
+            'identifierRR' => "A229",
+            'relationshipTypeCodeRR' => "RR",
+            'roleForCedentCodeFCRR' => "FC",
+            'subclassNumberFCRR' => "76",
             'identifierIR' => $request->identifierIR,
-            'relationshipTypeCodeIR' => $request->relationshipTypeCodeIR,
-            'referenceIR' => $request->referenceIR,
-            'identifierBR' => $request->identifierBR,
-            'relationshipTypeCodeBR' => $request->relationshipTypeCodeBR,
-            'businessAdministratorTaskCodePayBR' => $request->businessAdministratorTaskCodePayBR,
-            'businessAdministratorTaskCodeADMBR' => $request->businessAdministratorTaskCodeADMBR,
-            'businessAdministratorTaskCodeBPAYBR' => $request->businessAdministratorTaskCodeBPAYBR,
-            'brokerTaskSubclassNumberBR' => $request->brokerTaskSubclassNumberBR,
-            'creditTermDurationUnitCodeBR' => $request->creditTermDurationUnitCodeBR,
-            'creditTermDurationValueBR' => $request->creditTermDurationValueBR,
-            'currencyIsoAlpha' => $request->currencyIsoAlpha,
-            'includedCountriesIsoAlpha3' => $request->includedCountriesIsoAlpha3,
-            'includedRefDataCode' => $request->includedRefDataCode,
-            'reportingUnitCode' => $request->reportingUnitCode,
-            'writtenSharePercent' => $request->writtenSharePercent,
-            'offeredSharePercent' => $request->offeredSharePercent,
-            'dedBrokerageCondNote' => $request->dedBrokerageCondNote,
-            'dedBrokerageCondDeductionTypeCode' => $request->dedBrokerageCondDeductionTypeCode,
-            'dedBrokerageCondCalculationMethodCode' => $request->dedBrokerageCondCalculationMethodCode,
-            'dedBrokerageCondPercent' => $request->dedBrokerageCondPercent,
-            'dedCommCondNote' => $request->dedCommCondNote,
-            'dedCommCondDeductionTypeCode' => $request->dedCommCondDeductionTypeCode,
-            'dedCommCondCalculationMethodCode' => $request->dedCommCondCalculationMethodCode,
-            'dedOtherCondCurrencyIsoAlpha' => $request->dedOtherCondCurrencyIsoAlpha,
-            'dedOtherCondComment' => $request->dedOtherCondComment,
-            'limPremCondCurrencyIsoAlpha' => $request->limPremCondCurrencyIsoAlpha,
-            'limPremCondIsOriginal' => $request->limPremCondIsOriginal,
-            'limPremCondRefConditionPerCode' => $request->limPremCondRefConditionPerCode,
-            'limPremCondRefOptionalFieldCode' => $request->limPremCondRefOptionalFieldCode,
-            'limPremCondRefLimitTypeCode' => $request->limPremCondRefLimitTypeCode,
+            'relationshipTypeCodeIR' => "IR",
+            'referenceIR' => "REF",
+            'identifierBR' => "A802",
+            'relationshipTypeCodeBR' => "BR",
+            'businessAdministratorTaskCodePayBR' => "PAY",
+            'businessAdministratorTaskCodeADMBR' => "ADM",
+            'businessAdministratorTaskCodeBPAYBR' => "BPAY",
+            'brokerTaskSubclassNumberBR' => "75",
+            'creditTermDurationUnitCodeBR' => "D",
+            'creditTermDurationValueBR' => "45",
+            'currencyIsoAlpha' => $request->currency,
+            'includedCountriesIsoAlpha3' => "ZWE",
+            'includedRefDataCode' => "FI",
+            'reportingUnitCode' => "HRE",
+            'writtenSharePercent' => $request->WrittenSharePerc,
+            'offeredSharePercent' => $request->OfferedSharePerc,
+            'limPremCondRefPremiumTypeCode' => $request->limPremCondRefPremiumTypeCode,
+            'limPremCondCurrencyForLimitPremiumDepositHundredPercent' => $request->limPremCondCurrencyForLimitPremiumMinimumHundredPercent,
+            'dedBrokerageCondNote' => "Brokerage",
+            'dedBrokerageCondDeductionTypeCode' => "BRO",
+            'dedBrokerageCondCalculationMethodCode' => "PERCENT",
+            'dedBrokerageCondPercent' => "2",
+            'dedCommCondNote' => "Commission",
+            'dedCommCondDeductionTypeCode' => "COMM",
+            'dedCommCondCalculationMethodCode' => "PERCENT",
+            'dedOtherCondCurrencyIsoAlpha' => $request->currency,
+            'dedOtherCondComment' => "Additionalcharges",
+            'deductionCommissionPercent' => $request->deductionCommissionPercent,
+            'limPremCondCurrencyIsoAlpha' => $request->currency,
+            'limPremCondIsOriginal' => "False",
+            'limPremCondRefConditionPerCode' => "TOTAL_SUM",
+            'limPremCondRefOptionalFieldCode' => "MAIN_L",
+            'limPremCondRefLimitTypeCode' => "ANNUAL",
+            'refAgreementLifeCycleStatusCode' => "OA",
             'limPremCondAmount' => $request->limPremCondAmount,
-            'limPremCondCurrencyForLimitPremiumCurrencyIsoAlpha' => $request->limPremCondCurrencyForLimitPremiumCurrencyIsoAlpha,
+            'limPremCondCurrencyForLimitPremiumCurrencyIsoAlpha' => $request->currency,
             'limPremCondCurrencyForLimitPremiumMinimumHundredPercent' => $request->limPremCondCurrencyForLimitPremiumMinimumHundredPercent,
-            'limPremCondInstalmentConditionCurrencyIsoAlpha' => $request->limPremCondInstalmentConditionCurrencyIsoAlpha,
+            'limPremCondInstalmentConditionCurrencyIsoAlpha' => $request->currency,
             'limPremCondInstalmentConditionNumberOfInstalments' => $request->limPremCondInstalmentConditionNumberOfInstalments,
-            'limPremCondPaymentOfFirstInstalmentUnitCode' => $request->limPremCondPaymentOfFirstInstalmentUnitCode,
-            'limPremCondPaymentOfFirstInstalmentUnitSubclassNumber' => $request->limPremCondPaymentOfFirstInstalmentUnitSubclassNumber,
-            'limPremCondPaymentOfFirstInstalmentValue' => $request->limPremCondPaymentOfFirstInstalmentValue,
-            'limPremCondPaymentOfSubsequentInstalmentUnitCode' => $request->limPremCondPaymentOfSubsequentInstalmentUnitCode,
-            'limPremCondPaymentOfSubsequentInstalmentUnitSubclassNumber' => $request->limPremCondPaymentOfSubsequentInstalmentUnitSubclassNumber
+            'limPremCondPaymentOfFirstInstalmentUnitCode' => "D",
+            'limPremCondPaymentOfFirstInstalmentUnitSubclassNumber' => "69",
+            'limPremCondPaymentOfFirstInstalmentValue' => "45",
+            'limPremCondPaymentOfSubsequentInstalmentUnitCode' => "D",
+            'limPremCondPaymentOfSubsequentInstalmentUnitSubclassNumber' => "69"
         );
 
 
@@ -663,7 +687,17 @@ Group By
 // Close cURL res;ource
         curl_close($ch);
 
-        return $result;
+
+
+        if (json_decode($result, true)['responseDesc'] == "success") {
+
+            return redirect()->back()->with('message', 'successfully created bussiness ,transactionRef: ' . json_decode($result, true)['transactionRef']);
+        }
+
+        if (json_decode($result, true)['responseCode'] == "01") {
+
+            return redirect()->back()->with('error', json_decode($result, true)['responseDesc']);
+        }
     }
 
     function addProduct(Request $request) {
@@ -728,6 +762,95 @@ Group By
         return $data;
     }
 
+    public function cities() {
+        $city = DB::table('city')
+                ->get();
+
+
+        $data = array(
+            'cities' => $city
+        );
+
+        return view("council.cities", $data);
+    }
+
+    public function suburbs($cityid) {
+
+        $val = Crypt::decrypt($cityid);
+
+        $city = DB::table('city')
+                ->where("c_id", $val)
+                ->first();
+
+        $suburb = DB::table("suburb")
+                ->where("sub_city_id", $val)
+                ->get();
+
+
+        $data = array(
+            'suburbs' => $suburb,
+            "city" => $city->c_name
+        );
+
+        return view("council.suburbs", $data);
+    }
+
+    public function property($suburbid) {
+        $val = Crypt::decrypt($suburbid);
+
+
+
+        $property = DB::table("property")
+                ->join('suburb', 'suburb.sub_id', "=", "property.pro_suburb_id")
+                ->where("pro_suburb_id", $val)
+                ->get();
+
+        if (sizeof($property) > 0) {
+            $data = array(
+                'property' => $property,
+                "suburb" => $property[0]->sub_name
+            );
+            return view("council.property", $data);
+        } else {
+            $data = array(
+                'property' => [],
+                "suburb" => ""
+            );
+
+            return view("council.property", $data);
+        }
+    }
+
+    public function propertyprofile($standid) {
+        $val = Crypt::decrypt($standid);
+
+        $property = DB::table("property")
+                ->join('suburb', 'suburb.sub_id', "=", "property.pro_suburb_id")
+                ->join('city', 'city.c_id', "=", "suburb.sub_city_id")
+                ->where("pro_id", $val)
+                ->first();
+
+        $data = array(
+            'property' => $property,
+            "suburb" => ""
+        );
+
+//        return $property;
+        return view("council.propertyprofile", $data);
+    }
+
+    public function maps() {
+
+
+        return view("council.maps");
+    }
+
+    public function mapshilside() {
+
+
+        return view("council.mapshilside");
+    }
+
 }
 
 //        $client = new Client();
@@ -764,5 +887,5 @@ Group By
 //        $client = new Client();
 //        $client->post($endpoint, $options);
 //
-//       
+//
 //        dd($request);

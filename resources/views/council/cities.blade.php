@@ -5,7 +5,7 @@
 
 <section role="main" class="content-body">
     <header class="page-header">
-        <h2>Principal Members</h2>
+        <h2>City Management</h2>
 
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">
@@ -14,7 +14,7 @@
                         <i class="fa fa-home"></i>
                     </a>
                 </li>
-                <li><span>Principal Members</span></li>
+                <li><span>City Management</span></li>
             </ol>
 
             <a class="sidebar-right-toggle"></a>
@@ -25,72 +25,65 @@
 
     <!-- start: page -->
     <div class="row">
-        <div class="col-md-12">
-            <div class="panel-group" id="accordionSuccess">
-                <div class="panel panel-accordion panel-accordion-primary">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionSuccess" href="#collapseSuccessOne">
-                                Search Member
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseSuccessOne" class="accordion-body collapse">
-                        <div class="panel-body">
-                            <form  method="post" action="{{url('searchmember')}}" id="loginform">
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" id="searchvalue" name="searchmember" placeholder="Search Member">
-                                    <small id="emailHelp" class="form-text text-muted">You can search by national ID,name,surname</small>
+        <!--        <div class="col-md-12">
+                    <div class="panel-group" id="accordionSuccess">
+                        <div class="panel panel-accordion panel-accordion-primary">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionSuccess" href="#collapseSuccessOne">
+                                        Search City
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseSuccessOne" class="accordion-body collapse">
+                                <div class="panel-body">
+                                    <form  method="post" action="{{url('searchmember')}}" id="loginform">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="searchvalue" name="searchmember" placeholder="Search Member">
+                                            <small id="emailHelp" class="form-text text-muted">You can search by national ID,name,surname</small>
+                                        </div>
+        
+        
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-search-plus"></i> Search </button>
+                                    </form>
                                 </div>
-
-
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-search-plus"></i> Search </button>
-                            </form>
+                            </div>
                         </div>
+        
                     </div>
-                </div>
-
-            </div>
-        </div>
+                </div>-->
         <div class="col-md-12 col-lg-12 col-xl-12">
             <section class="panel">
                 <header class="panel-heading">
                     <div class="panel-actions">
                         <a href="#" class="fa fa-caret-down"></a>
-                        <a href="#" class="fa fa-times"></a>
                     </div>
 
-                    <h2 class="panel-title">Principal Members</h2>
+                    <h2 class="panel-title">City Management</h2>
                 </header>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="mb-md">
-                                <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addmember">Add Principal <i class="fa fa-plus"></i></button>
+                                <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addmember">Add City <i class="fa fa-plus"></i></button>
                             </div>
                         </div>
                     </div>
                     <table class="table table-bordered table-striped mb-none" id="datatable-default">
                         <thead>
                             <tr>
-                                <th>Account</th>
-                                <th>Name</th>
-                                <th>Surname</th>
-                                <th class="hidden-phone">Phone</th>
-                                <th class="hidden-phone">National ID</th>
+                                <th class="center">City ID</th>
+                                <th class="center">City Name</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($members as  $data)
+                            @foreach($cities as  $data)
                             <tr class="gradeX">
-                                <td><a href="{{url('principalprofile/'.$data->a_principleID)}}">{{$data->a_account}}</a></td>
-                                <td>{{$data->a_firstname}}
+                                <td class="center"><a href="{{url('city/suburbs/'.Crypt::encrypt($data->c_id))}}">{{$data->c_id}}</a></td>
+                                <td class="center">{{$data->c_name}}
 
                                 </td>
-                                <td>{{$data->a_surname}}</td>
-                                <td class="center hidden-phone">{{$data->a_mobile}}</td>
-                                <td class="center hidden-phone">{{$data->a_IDNumber}}</td>
                             </tr>
                             @endforeach
 
@@ -107,9 +100,9 @@
 
     <!-- end: page -->
 </section>
+<!--
 
-
-<!-- Modal -->
+ Modal 
 <div class="modal fade" id="addmember" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -126,7 +119,7 @@
                             <header class="panel-heading">
                                 <div class="panel-actions">
                                     <a href="#" class="fa fa-caret-down"></a>
-                                    <a href="#" class="fa fa-times"></a>
+                                    
                                 </div>
 
                                 <h2 class="panel-title"> Principal Member Registration  Wizard</h2>
@@ -247,7 +240,6 @@
                                                     <header class="panel-heading">
                                                         <div class="panel-actions">
                                                             <a href="#" class="fa fa-caret-down"></a>
-                                                            <a href="#" class="fa fa-times"></a>
                                                         </div>
 
                                                         <h2 class="panel-title">Dependencies</h2>
@@ -311,7 +303,7 @@
 </div>
 
 
-<!-- Modal -->
+ Modal 
 <div class="modal fade" id="adddependantOnReg" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -405,6 +397,6 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->
 
 @include('includes.footer')

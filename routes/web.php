@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 
 
-Route::get('/login', ['uses'=>'HCPController@loadLogin', 'as'=>'login']);
+Route::get('/login', ['uses' => 'HCPController@loadLogin', 'as' => 'login']);
 Route::get('/principalprofile/{id}', 'HCPController@principalprofile');
 Route::get('/agentprofile/{id}', 'HCPController@agentprofile');
 Route::get('/agents', 'HCPController@agents');
@@ -25,6 +25,19 @@ Route::get('/vreports', 'HCPController@vreports');
 Route::get('/files', 'HCPController@files');
 Route::get('/home', 'HCPController@home');
 Route::get('/products', 'HCPController@products');
+
+
+
+Route::get('/cities', 'HCPController@cities');
+Route::get('/maps', 'HCPController@maps');
+Route::get('maps/hilside', 'HCPController@mapshilside');
+
+Route::get('/city/suburbs/{cityid}', 'HCPController@suburbs');
+Route::get('/property/{suburbid}', 'HCPController@property');
+Route::get('/property/profile/{standid}', 'HCPController@propertyprofile');
+
+
+
 
 
 
@@ -58,7 +71,10 @@ Route::post('/registermemberAjax', 'HCPController@registermember');
 
 
 Route::get('/sics', 'HCPController@sics');
-Route::get('/createbusiness', 'HCPController@createbusiness');
+//Route::get('/createbusiness', 'HCPController@createbusiness');
+
+Route::get('/createbusiness', ['uses' => 'HCPController@createbusiness', 'as' => 'createbusiness']);
+
 
 Route::post('/createclaim', 'HCPController@createclaim');
 Route::post('/createbusiness', 'HCPController@createbusinessPost');

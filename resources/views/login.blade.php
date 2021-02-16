@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}" />
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>FBC-Hospital Cash Plan &mdash; </title>
+        <title>Assest Management System  &mdash; </title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Free HTML5 Website Template by FreeHTML5.co" />
         <meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
@@ -68,7 +68,7 @@
 
                     <div class="row">
                         <div class="col-sm-6 col-xs-12">
-                            <div id="gtco-logo"><a>FBC Insurance Company Limited</a></div>
+                            <div id="gtco-logo"><a>Graphmen Asset Management System </a></div>
                         </div>
                         <div class="col-xs-6 text-right menu-1">
                             <!-- <ul>
@@ -101,7 +101,7 @@
 
                             <div class="row row-mt-15em">
                                 <div class="col-md-7 mt-text animate-box" data-animate-effect="fadeInUp">
-                                    <h1>Hospital Cash Plan</h1>
+                                    <h1>Graphmen GEOSPATIAL</h1>
                                 </div>
                                 <div class="col-md-4 col-md-push-1 animate-box" data-animate-effect="fadeInRight">
                                     <div class="form-wrap">

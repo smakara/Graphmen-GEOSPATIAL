@@ -23,7 +23,7 @@
 
 
     @if(session()->has('message'))
-  
+
 
     <div class="alert alert-primary">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -31,12 +31,12 @@
     </div>
 
    @endif
-   
+
     @if(session()->has('error'))
 
     <div class="alert alert-danger">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <strong>Error!</strong> 
+        <strong>Error!</strong>
     </div>
     @endif
     <!-- start: page -->
@@ -61,34 +61,6 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-md-5 control-label" for="inputDefault">ScopeOfCoverReferenceSequenceNumber</label>
-                        <div class="col-md-7">
-                            <input type="text" class="form-control" name="scopeOfCoverReferenceSequenceNumber" id="scopeOfCoverReferenceSequenceNumber" required="true">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-5 control-label" for="inputDefault">ScopeOfCoverReferenceName</label>
-                        <div class="col-md-7">
-                            <input type="text" class="form-control" name="scopeOfCoverReferenceName" id="scopeOfCoverReferenceName" required="true">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-5 control-label" for="inputDefault">ClaimLossName</label>
-                        <div class="col-md-7">
-                            <input type="text" class="form-control" name="claimLossName" id="claimLossName" required="true">
-                        </div>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label class="col-md-5 control-label" for="inputDefault">ClaimPartialLossStartingDateVersionNumber</label>
-                        <div class="col-md-7">
-                            <input type="text" class="form-control" name="claimPartialLossStartingDateVersionNumber" id="claimPartialLossStartingDateVersionNumber" required="true">
-                        </div>
-                    </div>
 
 
                     <div class="form-group">
@@ -112,12 +84,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-md-5 control-label" for="inputDefault">ClaimsTriggerCode</label>
-                        <div class="col-md-7">
-                            <input type="text" class="form-control" name="claimsTriggerCode" id="claimsTriggerCode" required="true">
-                        </div>
-                    </div>
+
 
 
 
@@ -127,12 +94,7 @@
             <div class="col-md-6">
                 <div class="panel-body">
 
-                    <div class="form-group">
-                        <label class="col-md-5 control-label" for="inputDefault">ClaimsTriggerSubclassNumber</label>
-                        <div class="col-md-7">
-                            <input type="text" class="form-control" name="claimsTriggerSubclassNumber" id="claimsTriggerSubclassNumber" required="true">
-                        </div>
-                    </div>
+
 
                     <div class="form-group">
                         <label class="col-md-5 control-label" for="inputDefault">ClaimsTriggerSubclassDate</label>
@@ -140,12 +102,7 @@
                             <input type="date" class="form-control" name="claimsTriggerSubclassDate" id="claimsTriggerSubclassDate" required="true">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-md-5 control-label" for="inputDefault">RecoveryCalculationIsClaimIncluded</label>
-                        <div class="col-md-7">
-                            <input type="text" class="form-control" name="recoveryCalculationIsClaimIncluded" id="recoveryCalculationIsClaimIncluded" required="true">
-                        </div>
-                    </div>
+
 
 
                     <div class="form-group">
@@ -154,12 +111,7 @@
                             <input type="text" class="form-control" name="claimTypeCode" id="claimTypeCode" required="true">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-md-5 control-label" for="inputDefault">ClaimTypeSubclassNumber</label>
-                        <div class="col-md-7">
-                            <input type="text" class="form-control" name="claimTypeSubclassNumber" id="claimTypeSubclassNumber" required="true">
-                        </div>
-                    </div>
+
 
 
                     <div class="form-group">
@@ -169,18 +121,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-md-5 control-label" for="inputDefault">ScopeOfCoverRelationClaimStatusCode</label>
-                        <div class="col-md-7">
-                            <input type="text" class="form-control" name="scopeOfCoverRelationClaimStatusCode" id="scopeOfCoverRelationClaimStatusCode" required="true">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-5 control-label" for="inputDefault">ScopeOfCoverRelationClaimStatusSubclassNumber</label>
-                        <div class="col-md-7">
-                            <input type="text" class="form-control" name="scopeOfCoverRelationClaimStatusSubclassNumber" id="scopeOfCoverRelationClaimStatusSubclassNumber" required="true">
-                        </div>
-                    </div>
+
 
 
                     <div class="form-group">
@@ -189,18 +130,8 @@
                             <input type="text" class="form-control" name="claimDispositionDateOfChange" id="claimDispositionDateOfChange" required="true">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-md-5 control-label" for="inputDefault">ClaimDispositionCode</label>
-                        <div class="col-md-7">
-                            <input type="text" class="form-control" name="claimDispositionCode" id="claimDispositionCode" required="true">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-5 control-label" for="inputDefault">ClaimDispositionSubclassNumber</label>
-                        <div class="col-md-7">
-                            <input type="text" class="form-control" name="claimDispositionSubclassNumber" id="claimDispositionSubclassNumber" required="true">
-                        </div>
-                    </div>
+
+                    
 
                     <div class=" form-group col-md-12 text-right">
 
