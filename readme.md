@@ -11,7 +11,7 @@
 
 <p align="center">
  
-   <img src="https://github.com/smakara/Graphmen-GEOSPATIAL/blob/master/screenshots/1.png" width="350" title="hover text">
-     <img src="https://github.com/smakara/Graphmen-GEOSPATIAL/blob/master/screenshots/2.png" width="350" title="hover text">
+   <img src="https://github.com/smakara/Graphmen-GEOSPATIAL/blob/master/screenshots/1.png" width="950" title="hover text">
+     <img src="https://github.com/smakara/Graphmen-GEOSPATIAL/blob/master/screenshots/2.png" width="950" title="hover text">
   
 </p>
